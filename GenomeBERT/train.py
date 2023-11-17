@@ -1,12 +1,13 @@
-import argparse, sys, glob
+import argparse, sys, os, logging
 import torch
 from transformers import AutoTokenizer, AutoModel
 import util
+import numpy as np
 
-from huggingface_hub import login
-login("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")
+# from huggingface_hub import login
+# login("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")
 
-optim = torch.optim.AdamW(model.parameters(), lr=lr)
+
 torch.manual_seed(42)
 np.random.seed(42)
 
@@ -15,6 +16,13 @@ def check_version():
     if(transformers.__version__ is not "4.30.2"):
         sys.stderr.write("error: transformers version {transformers.__version__} is not 4.30.2, please install correct version")
         sys.exit(1)
+
+def prerequisite():
+    create_dir = ['models', 'log']
+    for dir in create_dir:
+        if(not os.path.isdir(dir)):
+            os.makedirs(dir)
+
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, encodings):
@@ -28,15 +36,94 @@ class Dataset(torch.utils.data.Dataset):
         return {key: tensor[i] for key, tensor in self.encodings.items()}
 
 
-def pretrain(model, tokenizer, train_data, val_data, lr, epoch, batch_size):
+def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, batch_size, device):
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
+    val_labels = torch.tensor(val_batch['input_ids'])
+    val_mask = torch.tensor(val_batch['attention_mask'])
+    val_input_ids = val_labels.detach().clone()
+    val_encodings = {'input_ids': val_input_ids, 'attention_mask': val_mask, 'labels': val_labels}
+
+    val_dataset = Dataset(val_encodings)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
+    optim = torch.optim.AdamW(model.parameters(), lr=lr)
+
+    min_avg_loss = 9999
+    logger.info("Training Started!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    for epoch in range(epochs):
+        logger.info("epoch {} started..........................................................".format(epoch))
+        mean_train_loss = 0
+        mean_val_loss = 0
+        logger.info("creating training batch for epoch {epoch}")
+        batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
+        logger.info("training batch for epoch {epoch} created \n {batch['input_ids'][-1]}")
+        labels = torch.tensor(batch['input_ids'])
+        mask = torch.tensor(batch['attention_mask'])
+        input_ids = labels.detach().clone()
+        rand = torch.rand(input_ids.shape)
+        mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2) * (input_ids != 3)
+        for i in range(input_ids.shape[0]):
+            # get indices of mask positions from mask array
+            selection = torch.flatten(mask_arr[i].nonzero()).tolist()
+            # mask input_ids
+            input_ids[i, selection] = 4  # our custom [MASK] token == 4
+
+        encodings = {'input_ids': input_ids, 'attention_mask': mask, 'labels': labels}
+        dataset = Dataset(encodings)
+        loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        model.train()
+        train_loss = 0
+        counter = 0
+        for batch in loader:
+            counter += 1
+            optim.zero_grad()
+            input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
+            labels = batch['labels'].to(device)
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            train_loss = outputs.loss
+            if torch.cuda.device_count() > 1:
+                train_loss.sum().backward()
+            else:
+                train_loss.backward()
+            util.get_gpu_utilization(logger)
+            logger.info(f'Epoch {epoch},batch {counter} mean Loss : {train_loss.mean().item()}')  
+            mean_train_loss += train_loss.mean().item()
+        mean_train_loss = mean_train_loss/counter
+        logger.info(f'Epoch {epoch}, Training Mean Loss : {mean_train_loss}')
+        counter = 0
+        model.eval()
+        val_loss = 0
+        with torch.no_grad():
+            for val_batch in val_loader:
+                counter += 1
+                val_input_ids = val_batch['input_ids'].to(device)
+                val_attention_mask = val_batch['attention_mask'].to(device)
+                val_labels = val_batch['labels'].to(device)
+                # Process for validation
+                val_outputs = model(val_input_ids, attention_mask=val_attention_mask, labels=val_labels)
+                val_loss += val_outputs.loss.mean().item()
+        mean_val_loss = val_loss/counter
+        logger.info(f'Epoch {epoch}, Validation Mean Loss: {mean_val_loss}')
+        if min_avg_loss > (0.5*mean_train_loss + 0.5*mean_val_loss):
+            min_avg_loss = 0.5*mean_train_loss + 0.5*mean_val_loss
+            logger.info("Saving best run model for value = {}".format(min_avg_loss))
+            if torch.cuda.device_count() > 1:
+                model.module.save_pretrained("models/{}".format(model_name))
+            else:
+                model.save_pretrained("models/{}".format(model_name))
+        else:
+            logger.info("Not saving model, because loss hasn't decreased")
+    logger.info("Training completed, exiting!!")
+    return 0.5*mean_train_loss + 0.5*mean_val_loss
+
+
 
 def main(model_name, data_dir, logger):
     lr = 5.9574e-05
-    epochs = 10 #28
+    epoch = 10 #28
     batch_size = 512
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
-    model = = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
+    model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
     if torch.cuda.device_count() > 1:
@@ -56,7 +143,7 @@ def main(model_name, data_dir, logger):
         val_data.extend(val_temp['Sequence'])
         test_data.extend(test_temp['Sequence'])
     
-    pretrain(model, tokenizer train_data, val_data, lr, epoch, batch_size)
+    pretrain(model, model_name, tokenizer, train_data, val_data, lr, epoch, batch_size, device)
 
     
 if(__name__) == ('__main__'):
@@ -70,5 +157,6 @@ if(__name__) == ('__main__'):
                     filemode='w')
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
-    check_version()  
+    check_version() 
+    prerequisite() 
     main(args.model_name, args.data_dir, logger)
