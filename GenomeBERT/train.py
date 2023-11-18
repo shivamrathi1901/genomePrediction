@@ -15,7 +15,7 @@ np.random.seed(42)
 def check_version():
     import transformers
     if(transformers.__version__ != "4.30.2"):
-        sys.stderr.write("error: transformers version {} is not 4.30.2, please install correct version").format(transformers.__version__})
+        sys.stderr.write("error: transformers version {} is not 4.30.2, please install correct version".format(transformers.__version__))
         sys.exit(1)
 
 def prerequisite():
