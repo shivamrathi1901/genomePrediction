@@ -21,9 +21,9 @@ def tokenize(sequences, model_name, logger):
     training_corpus = get_training_corpus(sequences)
     logger.info("now training tokenizer")
     tokenizer.train_new_from_iterator(training_corpus, 4096) #, special_tokens=['<s>', '<pad>', '</s>', '<unk>', '<mask>']
-    if(not os.path.exists(model_name)):
-      os.mkdir(model_name)
-    tokenizer.save_pretrained("models/{model_name}")
+    # if(not os.path.exists(model_name)):
+    #   os.mkdir(model_name)
+    tokenizer.save_pretrained("models/{}".format(model_name))
     logger.info("tokenizer is trained and saved")
 
 def read_all_sequences(data_dir):
