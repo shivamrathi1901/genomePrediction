@@ -12,7 +12,7 @@
 #SBATCH --time=7-00:00:00              	# Total run time limit (HH:MM:SS)
 #SBATCH --export=ALL                 	# Export you current env to the job env
 #SBATCH --mail-user=ratish.jha@uga.edu	# email of the user
-#SBATCH --output=slurm.%x_%j.out 	# STDOUT output file
+#SBATCH --output=log/%j_%x.out 	# STDOUT output file
 
 ##Install of softwares and load before running models:
 ml Python/3.8.6-GCCcore-10.2.0
