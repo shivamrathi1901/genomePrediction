@@ -28,7 +28,7 @@ def tokenize(sequences, model_name, logger):
 
 def read_all_sequences(data_dir):
     rawdata = pd.DataFrame(columns=[['Sequence']])
-    for file in glob.glob("{}/*.csv".format(data_dir)):
+    for file in glob.glob("{}/Swissprot*.csv".format(data_dir)):
         temp = pd.read_csv(file)
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
