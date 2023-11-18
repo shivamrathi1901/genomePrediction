@@ -138,7 +138,7 @@ def main(model_name, data_dir, logger):
     for file_path in file_list:
         file_path = "{}/{}".format(data_dir, file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
-        logger.info("reading from file {file_path}")
+        logger.info("reading from file {}".format(file_path))
         train_temp, val_temp, test_temp = util.dataload(file_path)
         train_data.extend(train_temp['Sequence'])
         val_data.extend(val_temp['Sequence'])
