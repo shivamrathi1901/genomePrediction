@@ -33,6 +33,7 @@ def read_all_sequences(data_dir):
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
         rawdata = pd.concat(frames)
+        
     return rawdata['Sequence'].values.tolist()
 
 
