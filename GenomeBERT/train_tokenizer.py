@@ -31,7 +31,8 @@ def read_all_sequences(data_dir):
     for file in glob.glob("{}/*.csv".format(data_dir)):
         temp = pd.read_csv(file)
         temp = temp[['Sequence']]
-        rawdata.append(temp)
+        frames = [rawdata, temp]
+        rawdata = pd.concat(frames)
     return rawdata['Sequence'].values.tolist()
 
 
