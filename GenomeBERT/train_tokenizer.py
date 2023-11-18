@@ -15,14 +15,16 @@ def get_training_corpus(sequences):
         seq = sequences[i : i + 1000]
         yield seq
 
-def tokenize(sequences, model_name):
+def tokenize(sequences, model_name, logger):
     # not required as we are using static tokenizer
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     training_corpus = get_training_corpus(sequences)
+    logger.info("now training tokenizer")
     tokenizer.train_new_from_iterator(training_corpus, 4096) #, special_tokens=['<s>', '<pad>', '</s>', '<unk>', '<mask>']
     if(not os.path.exists(model_name)):
       os.mkdir(model_name)
-    tokenizer.save_model("models/{model_name}")
+    tokenizer.save_pretrained("models/{model_name}")
+    logger.info("tokenizer is trained and saved")
 
 def read_all_sequences(data_dir):
     rawdata = pd.DataFrame(columns=[['Sequence']])
@@ -35,8 +37,8 @@ def read_all_sequences(data_dir):
 
 def main(model_name, data_dir, logger):
     sequences = read_all_sequences(data_dir)
-    logger.info("sequences are read, now training tokenizer")
-    tokenize(sequences, model_name)
+    logger.info("Sequence read is of size {len(sequences)}")
+    tokenize(sequences, model_name, logger)
 
 if(__name__) == ('__main__'):
     parser = argparse.ArgumentParser()
