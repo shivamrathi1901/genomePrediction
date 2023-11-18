@@ -17,7 +17,7 @@
 ##Install of softwares and load before running models:
 ml Python/3.8.6-GCCcore-10.2.0
 
-pip install scikit-learn scipy matplotlib
+# pip install scikit-learn scipy matplotlib
 
 date
 python train.py -m GenomeBERT -d /scratch/sb66469/ProjectAIS/FinalData -id $SLURM_JOB_ID
