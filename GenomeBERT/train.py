@@ -3,6 +3,7 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 import util
 import numpy as np
+import torch.nn as nn
 
 # from huggingface_hub import login
 # login("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")
