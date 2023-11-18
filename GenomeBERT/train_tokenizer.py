@@ -22,7 +22,7 @@ def get_training_corpus(sequences):
 def tokenize(sequences, model_name, logger):
     # not required as we are using static tokenizer
     if(os.path.exists("models/{}".format(model_name))):
-        tokenize = AutoTokenizer.from_pretrained("models/{}".format(model_name), trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained("models/{}".format(model_name), trust_remote_code=True)
     else:
         tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     training_corpus = get_training_corpus(sequences)
