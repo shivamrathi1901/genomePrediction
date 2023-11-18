@@ -37,7 +37,7 @@ def read_all_sequences(data_dir):
 
 def main(model_name, data_dir, logger):
     sequences = read_all_sequences(data_dir)
-    logger.info("Sequence read is of size {len(sequences)}")
+    logger.info("Sequence read is of size {}".format(len(sequences)))
     tokenize(sequences, model_name, logger)
 
 if(__name__) == ('__main__'):
