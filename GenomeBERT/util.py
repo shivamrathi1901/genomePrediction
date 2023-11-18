@@ -7,6 +7,7 @@ import subprocess
 def dataload(file):
     rawdata = pd.read_csv(file)
     rawdata = rawdata[['Sequence', 'OC']]
+    rawdata = rawdata.dropna()
     return split_dataset(rawdata)
 
 def split_dataset(rawdata):
