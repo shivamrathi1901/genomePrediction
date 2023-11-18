@@ -136,7 +136,7 @@ def main(model_name, data_dir, logger):
     train_data, val_data, test_data = [], [], []
     file_list = ['Uniprot_Prokaryotes.csv', 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv']
     for file_path in file_list:
-        file_path = "{data_dir}/{file_path}"
+        file_path = "{}/{}".format(data_dir, file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
         logger.info("reading from file {file_path}")
         train_temp, val_temp, test_temp = util.dataload(file_path)
