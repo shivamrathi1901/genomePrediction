@@ -12,8 +12,11 @@ def check_version():
 
 def get_training_corpus(sequences):
     for i in range(0, len(sequences), 1000):
-        seq = sequences[i : i + 1000]
-        yield seq
+        for seq in sequences[i : i + 1000]:
+            if(not isinstance(seq, str)):
+                logger.info("seq is : {}".format(seq))
+                sys.exit(1)
+        yield sequences[i : i + 1000]
 
 def tokenize(sequences, model_name, logger):
     # not required as we are using static tokenizer
