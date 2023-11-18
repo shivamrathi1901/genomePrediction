@@ -38,7 +38,7 @@ class Dataset(torch.utils.data.Dataset):
 
 
 def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, batch_size, device):
-    logger.info("".format(type(val_data)))
+    logger.info("{} and {}".format(type(val_data), len(val_data)))
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
     val_labels = torch.tensor(val_batch['input_ids'])
     val_mask = torch.tensor(val_batch['attention_mask'])
