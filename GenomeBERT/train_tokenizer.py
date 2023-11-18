@@ -11,6 +11,7 @@ def check_version():
         sys.exit(1)
 
 def get_training_corpus(sequences):
+
     for i in range(0, len(sequences), 1000):
         for seq in sequences[i : i + 1000]:
             if(not isinstance(seq, str)):
@@ -39,7 +40,8 @@ def read_all_sequences(data_dir):
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
         rawdata = pd.concat(frames)
-        
+    rawdata = rawdata[['Sequence']]
+    rawdata = rawdata.dropna()
     return rawdata['Sequence'].values.tolist()
 
 
