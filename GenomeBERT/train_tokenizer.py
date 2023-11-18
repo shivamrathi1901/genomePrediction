@@ -10,10 +10,16 @@ def check_version():
         sys.stderr.write("error: transformers version {transformers.__version__} is not 4.30.2, please install correct version")
         sys.exit(1)
 
+def get_training_corpus(sequences):
+    for i in range(0, len(sequences), 1000):
+        seq = sequences[i : i + 1000]
+        yield seq
+
 def tokenize(sequences, model_name):
     # not required as we are using static tokenizer
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
-    tokenizer.train(sequences, vocab_size=4096, min_frequency=2) #, special_tokens=['<s>', '<pad>', '</s>', '<unk>', '<mask>']
+    training_corpus = get_training_corpus(sequences)
+    tokenizer.train_new_from_iterator(training_corpus, 4096) #, special_tokens=['<s>', '<pad>', '</s>', '<unk>', '<mask>']
     if(not os.path.exists(model_name)):
       os.mkdir(model_name)
     tokenizer.save_model("models/{model_name}")
@@ -38,7 +44,7 @@ if(__name__) == ('__main__'):
     parser.add_argument("-d", "--data_dir", help="data absolute directory", required=True)
     parser.add_argument("-id","--job_id", help="job id", required=True)
     args = parser.parse_args()
-    logging.basicConfig(filename="log/{}_{}.log".format(args.job_id, 'train'),
+    logging.basicConfig(filename="log/{}_{}.log".format(args.job_id, 'tokenize'),
                     format="%(asctime)s [%(levelname)s]: %(message)s",
                     filemode='w')
     logger = logging.getLogger()
