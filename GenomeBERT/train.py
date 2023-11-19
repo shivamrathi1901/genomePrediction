@@ -57,7 +57,7 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
         mean_val_loss = 0
         logger.info("creating training batch for epoch {}".format(epoch))
         batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
-        logger.info("training batch for epoch {epoch} created \n {batch['input_ids'][-1]}")
+        logger.info("training batch for epoch {epoch} created \n ".format({batch['input_ids'][-1]}))
         labels = torch.tensor(batch['input_ids'])
         mask = torch.tensor(batch['attention_mask'])
         input_ids = labels.detach().clone()
@@ -128,10 +128,10 @@ def main(model_name, data_dir, logger):
     model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
+    model.to(device)
     if torch.cuda.device_count() > 1:
         model = nn.DataParallel(model, device_ids=device_ids)
-    else:
-        model.to(device)
+    
 
     # Read and load data
     train_data, val_data, test_data = [], [], []
