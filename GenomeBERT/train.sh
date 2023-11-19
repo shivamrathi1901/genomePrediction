@@ -12,6 +12,7 @@
 #SBATCH --time=30-00:00:00               # Total run time limit (HH:MM:SS)
 #SBATCH --export=ALL                    # Export you current env to the job env
 #SBATCH --mail-user=ratish.jha@uga.edu  # email of the user
+#SBATCH --mail-type=END,FAIL            # Notify user by email when certain event types occur
 #SBATCH --output=log/%j_%x.out  # STDOUT output file
 
 ##Install of softwares and load before running models:

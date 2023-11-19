@@ -55,7 +55,7 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
         logger.info("epoch {} started..........................................................".format(epoch))
         mean_train_loss = 0
         mean_val_loss = 0
-        logger.info("creating training batch for epoch {epoch}")
+        logger.info("creating training batch for epoch {}".format(epoch))
         batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
         logger.info("training batch for epoch {epoch} created \n {batch['input_ids'][-1]}")
         labels = torch.tensor(batch['input_ids'])
