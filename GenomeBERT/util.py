@@ -29,7 +29,7 @@ def get_gpu_utilization(logger):
     try:
         output = subprocess.check_output(['nvidia-smi', '--format=csv,noheader,nounits', '--query-gpu=utilization.gpu'])
         gpu_utilization = [float(x) for x in output.decode('utf-8').strip().split('\n')]
-        logger.info(f"GPU Utilization: {gpu_utilization}%")
+        logger.info(f"GPU Utilization: {}%".format(gpu_utilization))
         return
     except Exception as e:
         logger.warning(f"Failed to get GPU utilization: {e}")
