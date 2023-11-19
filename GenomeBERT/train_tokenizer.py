@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer
 import argparse, sys, os, logging, glob
 import pandas as pd
-
+import gc
 
 
 def check_version():
@@ -36,10 +36,13 @@ def tokenize(sequences, model_name, logger):
 def read_all_sequences(data_dir):
     rawdata = pd.DataFrame(columns=[['Sequence']])
     for file in glob.glob("{}/Uniprot_Eukaryotes.csv".format(data_dir)):
+        logger.info("reading file : {}".format(file))
         temp = pd.read_csv(file)
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
         rawdata = pd.concat(frames)
+    del frames
+    gc.collect()
     rawdata = rawdata[['Sequence']]
     rawdata = rawdata.dropna()
     return rawdata['Sequence'].values.tolist()
