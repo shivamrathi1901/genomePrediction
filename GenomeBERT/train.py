@@ -54,8 +54,8 @@ def pretrain(model_name, train_data, val_data):
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
-    val_labels = torch.tensor(val_batch['input_ids'])
-    val_mask = torch.tensor(val_batch['attention_mask'])
+    val_labels = val_batch['input_ids'].clone().detach()
+    val_mask = val_batch['attention_mask'].clone().detach()
     val_input_ids = val_labels.detach().clone()
     val_encodings = {'input_ids': val_input_ids, 'attention_mask': val_mask, 'labels': val_labels}
 
