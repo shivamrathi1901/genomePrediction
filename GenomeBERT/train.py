@@ -48,8 +48,9 @@ def pretrain(model_name, train_data, val_data):
     device_ids = [0, 1, 2, 3]
     model.to(device)
     if torch.cuda.device_count() > 1:
-        # model = nn.DataParallel(model, device_ids=device_ids)
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=device_ids)
+        model = nn.DataParallel(model, device_ids = device_ids)
+        # model = torch.nn.parallel.DistributedDataParallel(model)
+        
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
@@ -70,9 +71,11 @@ def pretrain(model_name, train_data, val_data):
         mean_val_loss = 0
         logger.info("creating training batch for epoch {}".format(epoch))
         batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
-        logger.info("training batch for epoch {} created \n {}".format(epoch, batch))
-        labels = torch.tensor(batch['input_ids'])
-        mask = torch.tensor(batch['attention_mask'])
+        # logger.info("training batch for epoch {} created \n {}".format(epoch, batch))
+        # labels = torch.tensor(batch['input_ids'])
+        # mask = torch.tensor(batch['attention_mask'])
+        labels = batch['input_ids'].clone().detach()
+        mask = batch['attention_mask'].clone().detach()
         input_ids = labels.detach().clone()
         rand = torch.rand(input_ids.shape)
         mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2) * (input_ids != 3)
