@@ -8,7 +8,7 @@
 #SBATCH --nodes=1                    	# Number of nodes you require
 #SBATCH --ntasks=1                 	# total number of tasks across all nodes
 #SBATCH --cpus-per-task=1        	# Cores per task (>1 if multithread tasks)
-#SBATCH --mem=990G                  	# Real memory (RAM) required (MB)
+#SBATCH --mem=900G                  	# Real memory (RAM) required (MB)
 #SBATCH --time=30-00:00:00              	# Total run time limit (HH:MM:SS)
 #SBATCH --export=ALL                 	# Export you current env to the job env
 #SBATCH --mail-type=END,FAIL            # Notify user by email when certain event types occur

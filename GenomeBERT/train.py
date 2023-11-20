@@ -48,7 +48,8 @@ def pretrain(model_name, train_data, val_data):
     device_ids = [0, 1, 2, 3]
     model.to(device)
     if torch.cuda.device_count() > 1:
-        model = nn.DataParallel(model, device_ids=device_ids)
+        # model = nn.DataParallel(model, device_ids=device_ids)
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=device_ids)
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
@@ -85,7 +86,7 @@ def pretrain(model_name, train_data, val_data):
         dataset = Dataset(encodings)
         loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
         model.train()
-        logger.info("Model parameters: {} \n\t next : {}".format(list(model.parameters(), next(model.parameters()))))
+        logger.info("Model parameters: {} \n\t next : {}".format(list(model.parameters()), next(model.parameters())))
         train_loss = 0
         counter = 0
         for batch in loader:
