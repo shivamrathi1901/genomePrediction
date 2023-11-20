@@ -47,9 +47,9 @@ def pretrain(model_name, train_data, val_data):
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
     model.to(device)
-    if torch.cuda.device_count() > 1:
-        model = nn.DataParallel(model, device_ids = device_ids)
-        # model = torch.nn.parallel.DistributedDataParallel(model)
+    # if torch.cuda.device_count() > 1:
+    #     model = nn.DataParallel(model, device_ids = device_ids)
+    #     # model = torch.nn.parallel.DistributedDataParallel(model)
         
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     

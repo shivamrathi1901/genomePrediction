@@ -22,5 +22,5 @@ pip install pycuda
 # pip install scikit-learn scipy matplotlib pycuda lietorch
 
 date
-python train.py -m GenomeBERT -d /scratch/sb66469/ProjectAIS/FinalData -id $SLURM_JOB_ID
+python train.py -m GenomeBERT -d /work/ah2lab/aisdata/ -id $SLURM_JOB_ID
 date
