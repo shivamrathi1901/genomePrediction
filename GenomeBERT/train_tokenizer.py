@@ -41,6 +41,7 @@ def read_all_sequences(data_dir):
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
         rawdata = pd.concat(frames)
+        rawdata = rawdata.sample(frac=0.5, random_state=42)
     del frames
     gc.collect()
     rawdata = rawdata[['Sequence']]

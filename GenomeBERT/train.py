@@ -85,6 +85,7 @@ def pretrain(model_name, train_data, val_data):
         dataset = Dataset(encodings)
         loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
         model.train()
+        logger.info("Model parameters: {} \n\t next : {}".format(list(model.parameters(), next(model.parameters()))))
         train_loss = 0
         counter = 0
         for batch in loader:
