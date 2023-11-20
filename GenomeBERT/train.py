@@ -37,7 +37,7 @@ class Dataset(torch.utils.data.Dataset):
         return {key: tensor[i] for key, tensor in self.encodings.items()}
 
 
-def pretrain(model_name, tokenizer, train_data, val_data):
+def pretrain(model_name, train_data, val_data):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     lr = 5.9574e-05
     epochs = 10 #28
@@ -93,6 +93,7 @@ def pretrain(model_name, tokenizer, train_data, val_data):
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
+            logger.info("Args passed : {} \n\t {} \n\t {}".format(input_ids, attention_mask, labels))
             outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
             train_loss = outputs.loss
             if torch.cuda.device_count() > 1:
