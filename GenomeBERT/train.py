@@ -14,8 +14,8 @@ np.random.seed(42)
 
 def check_version():
     import transformers
-    if(transformers.__version__ != "4.30.2"):
-        sys.stderr.write("error: transformers version {} is not 4.30.2, please install correct version".format(transformers.__version__))
+    if(transformers.__version__ != "4.28.0"):
+        sys.stderr.write("error: transformers version {} is not 4.28.0, please install correct version".format(transformers.__version__))
         sys.exit(1)
 
 def prerequisite():
@@ -37,8 +37,20 @@ class Dataset(torch.utils.data.Dataset):
         return {key: tensor[i] for key, tensor in self.encodings.items()}
 
 
-def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, batch_size, device):
-    logger.info("{} and {}".format(type(val_data), len(val_data)))
+def pretrain(model_name, tokenizer, train_data, val_data):
+    # logger.info("{} and {}".format(type(val_data), len(val_data)))
+    lr = 5.9574e-05
+    epochs = 10 #28
+    batch_size = 512
+    tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
+    model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    device_ids = [0, 1, 2, 3]
+    model.to(device)
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model, device_ids=device_ids)
+    optim = torch.optim.AdamW(model.parameters(), lr=lr)
+    
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
     val_labels = torch.tensor(val_batch['input_ids'])
     val_mask = torch.tensor(val_batch['attention_mask'])
@@ -47,7 +59,7 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
 
     val_dataset = Dataset(val_encodings)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
-    optim = torch.optim.AdamW(model.parameters(), lr=lr)
+    
 
     min_avg_loss = 9999
     logger.info("Training Started!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -57,7 +69,7 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
         mean_val_loss = 0
         logger.info("creating training batch for epoch {}".format(epoch))
         batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
-        # logger.info("training batch for epoch {} created \n {}".format(epoch, batch['input_ids'][-1]))
+        logger.info("training batch for epoch {} created \n {}".format(epoch, batch))
         labels = torch.tensor(batch['input_ids'])
         mask = torch.tensor(batch['attention_mask'])
         input_ids = labels.detach().clone()
@@ -81,7 +93,7 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
-            outputs = model(input_ids, attention_mask=attention_mask.to(dtype=torch.float32), labels=labels)
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
             train_loss = outputs.loss
             if torch.cuda.device_count() > 1:
                 train_loss.sum().backward()
@@ -121,16 +133,6 @@ def pretrain(model, model_name, tokenizer, train_data, val_data, lr, epochs, bat
 
 
 def main(model_name, data_dir, logger):
-    lr = 5.9574e-05
-    epoch = 10 #28
-    batch_size = 512
-    tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
-    model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    device_ids = [0, 1, 2, 3]
-    model.to(device)
-    if torch.cuda.device_count() > 1:
-        model = nn.DataParallel(model, device_ids=device_ids)
     
 
     # Read and load data
@@ -145,7 +147,7 @@ def main(model_name, data_dir, logger):
         val_data.extend(val_temp['Sequence'])
         test_data.extend(test_temp['Sequence'])
     
-    pretrain(model, model_name, tokenizer, train_data, val_data, lr, epoch, batch_size, device)
+    pretrain(model_name, train_data, val_data)
 
     
 if(__name__) == ('__main__'):
