@@ -99,8 +99,8 @@ def pretrain(model_name, train_data, val_data):
             attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
             logger.info("Args passed : {} \n\t {} \n\t {}".format(input_ids, attention_mask, labels))
-            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
-            train_loss = outputs.loss
+            loss, logits = model(input_ids, attention_mask=attention_mask, labels=labels)
+            train_loss = loss
             if torch.cuda.device_count() > 1:
                 train_loss.sum().backward()
             else:
