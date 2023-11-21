@@ -24,7 +24,7 @@ def dataload(file):
     rawdata = pd.read_csv(file)
     rawdata = rawdata[['Sequence', 'OC']]
     rawdata = rawdata.dropna()
-    return split_dataset(rawdata)
+    return rawdata
 
 def split_dataset(rawdata, split_ratio=0.2):
     from sklearn.model_selection import train_test_split

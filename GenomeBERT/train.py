@@ -153,13 +153,16 @@ def main(model_name, data_dir, logger, job_id):
     train_data, val_data, test_data = [], [], []
     file_list = ['Uniprot_Eukaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
     for file_path in file_list:
-        file_path = "{}/{}".format(data_dir, file_path)
+        file = "{}/{}".format("data/train", file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
-        logger.info("reading from file {}".format(file_path))
-        train_temp, val_temp, test_temp = util.dataload(file_path)
+        logger.info("reading from file {}".format(file))
+        train_temp = util.dataload(file)
+        file = "{}/{}".format("data/val", file_path)
+        val_temp = util.dataload(file)
+        logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
         val_data.extend(val_temp['Sequence'].values.tolist())
-        test_data.extend(test_temp['Sequence'].values.tolist())
+        # test_data.extend(test_temp['Sequence'].values.tolist())
     
     pretrain(model_name, train_data, val_data, job_id, scratch_model=False, scratch_token=True)
 
