@@ -41,15 +41,15 @@ def pretrain(model_name, train_data, val_data):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     lr = 5.9574e-05
     epochs = 10 #28
-    batch_size = 512
+    batch_size = 64
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
     model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
     model.to(device)
-    # if torch.cuda.device_count() > 1:
-    #     model = nn.DataParallel(model, device_ids = device_ids)
-    #     # model = torch.nn.parallel.DistributedDataParallel(model)
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model, device_ids = device_ids)
+        # model = torch.nn.parallel.DistributedDataParallel(model)
         
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     
@@ -149,9 +149,9 @@ def main(model_name, data_dir, logger):
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
         logger.info("reading from file {}".format(file_path))
         train_temp, val_temp, test_temp = util.dataload(file_path)
-        train_data.extend(train_temp['Sequence'])
-        val_data.extend(val_temp['Sequence'])
-        test_data.extend(test_temp['Sequence'])
+        train_data.extend(train_temp['Sequence'].values.tolist())
+        val_data.extend(val_temp['Sequence'].values.tolist())
+        test_data.extend(test_temp['Sequence'].values.tolist())
     
     pretrain(model_name, train_data, val_data)
 
