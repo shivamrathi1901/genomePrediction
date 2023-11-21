@@ -157,7 +157,7 @@ def main(model_name, data_dir, logger, job_id):
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
         logger.info("reading from file {}".format(file))
         train_temp = util.dataload(file)
-        file = "{}/{}".format("data/val", file_path)
+        file = "{}/{}".format("data/valid", file_path)
         val_temp = util.dataload(file)
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
