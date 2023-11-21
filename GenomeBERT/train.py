@@ -5,6 +5,7 @@ import util
 import numpy as np
 import torch.nn as nn
 
+
 # from huggingface_hub import login
 # login("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")
 
@@ -37,7 +38,7 @@ class Dataset(torch.utils.data.Dataset):
         return {key: tensor[i] for key, tensor in self.encodings.items()}
 
 
-def pretrain(model_name, train_data, val_data):
+def pretrain(model_name, train_data, val_data, job_id):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     lr = 5.9574e-05
     epochs = 10 #28
@@ -52,7 +53,8 @@ def pretrain(model_name, train_data, val_data):
         # model = torch.nn.parallel.DistributedDataParallel(model)
         
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
-    
+    training_losses = []
+    val_losses = []
     val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length=512)
     val_labels = val_batch['input_ids'].clone().detach()
     val_mask = val_batch['attention_mask'].clone().detach()
@@ -109,6 +111,7 @@ def pretrain(model_name, train_data, val_data):
             logger.info(f'Epoch {epoch},batch {counter} mean Loss : {train_loss.mean().item()}')  
             mean_train_loss += train_loss.mean().item()
         mean_train_loss = mean_train_loss/counter
+        training_losses.append(mean_train_loss)
         logger.info(f'Epoch {epoch}, Training Mean Loss : {mean_train_loss}')
         counter = 0
         model.eval()
@@ -123,6 +126,7 @@ def pretrain(model_name, train_data, val_data):
                 loss, logits = model(val_input_ids, attention_mask=val_attention_mask, labels=val_labels)
                 val_loss += loss.mean().item()
         mean_val_loss = val_loss/counter
+        val_losses.append(mean_val_loss)
         logger.info(f'Epoch {epoch}, Validation Mean Loss: {mean_val_loss}')
         if min_avg_loss > (0.5*mean_train_loss + 0.5*mean_val_loss):
             min_avg_loss = 0.5*mean_train_loss + 0.5*mean_val_loss
@@ -134,11 +138,12 @@ def pretrain(model_name, train_data, val_data):
         else:
             logger.info("Not saving model, because loss hasn't decreased")
     logger.info("Training completed, exiting!!")
+    util.plot(training_losses, val_losses, job_id)
     return 0.5*mean_train_loss + 0.5*mean_val_loss
 
 
 
-def main(model_name, data_dir, logger):
+def main(model_name, data_dir, logger, job_id):
     
 
     # Read and load data
@@ -153,7 +158,7 @@ def main(model_name, data_dir, logger):
         val_data.extend(val_temp['Sequence'].values.tolist())
         test_data.extend(test_temp['Sequence'].values.tolist())
     
-    pretrain(model_name, train_data, val_data)
+    pretrain(model_name, train_data, val_data, job_id)
 
     
 if(__name__) == ('__main__'):
@@ -169,4 +174,4 @@ if(__name__) == ('__main__'):
     logger.setLevel(logging.DEBUG)
     check_version() 
     prerequisite() 
-    main(args.model_name, args.data_dir, logger)
+    main(args.model_name, args.data_dir, logger, args.job_id)

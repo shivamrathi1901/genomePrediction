@@ -16,6 +16,15 @@ def split_dataset(rawdata):
     val_set, test_set = train_test_split(test_val_set, test_size=0.7, random_state=42)
     return train_set, val_set, test_set
 
+def plot(training_loss, val_loss, job_id):
+    import matplotlib.pyplot as plt
+    plt.plot(range(1, epochs + 1), training_losses, label='Training Loss')
+    plt.plot(range(1, epochs + 1), val_losses, label='Validation Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training vs Validation Loss')
+    plt.legend()
+    plt.savefig(f"{job_id}_plot.png")
 
 def count_nucleotides(sequence,nucleotides_count):
   for nucleotide in sequence:
