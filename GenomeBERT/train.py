@@ -98,7 +98,7 @@ def pretrain(model_name, train_data, val_data):
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
-            logger.info("Args passed : {} \n\t {} \n\t {}".format(input_ids, attention_mask, labels))
+            # logger.info("Args passed : {} \n\t {} \n\t {}".format(input_ids, attention_mask, labels))
             loss, logits = model(input_ids, attention_mask=attention_mask, labels=labels)
             train_loss = loss
             if torch.cuda.device_count() > 1:
@@ -120,8 +120,8 @@ def pretrain(model_name, train_data, val_data):
                 val_attention_mask = val_batch['attention_mask'].to(device)
                 val_labels = val_batch['labels'].to(device)
                 # Process for validation
-                val_outputs = model(val_input_ids, attention_mask=val_attention_mask, labels=val_labels)
-                val_loss += val_outputs.loss.mean().item()
+                loss, logits = model(val_input_ids, attention_mask=val_attention_mask, labels=val_labels)
+                val_loss += loss.mean().item()
         mean_val_loss = val_loss/counter
         logger.info(f'Epoch {epoch}, Validation Mean Loss: {mean_val_loss}')
         if min_avg_loss > (0.5*mean_train_loss + 0.5*mean_val_loss):
