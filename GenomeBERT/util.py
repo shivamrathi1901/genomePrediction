@@ -1,7 +1,23 @@
 import pandas as pd
 # import random, re
 # import numpy as np
-import subprocess
+import subprocess, os, glob
+
+def create_test_train_val_file(data_dir):
+    if(not os.path.isdir("data")):
+      os.makedirs("data")
+    os.makedirs("data/train")
+    os.makedirs("data/valid")
+    os.makedirs("data/test")
+    for file in glob.glob(f"{data_dir}/*.csv"):
+      rawdata = pd.read_csv(file)
+      rawdata = rawdata[['Sequence', 'OC']]
+      rawdata = rawdata.dropna()
+      train_set, val_set, test_set = split_dataset(rawdata, split_ratio=0.3)
+      train_set.to_csv(f"data/train/{file.split('/')[-1]}")
+      val_set.to_csv(f"data/valid/{file.split('/')[-1]}")
+      test_set.to_csv(f"data/test/{file.split('/')[-1]}")
+    print("Split dataset complete!")
 
 
 def dataload(file):
@@ -10,10 +26,10 @@ def dataload(file):
     rawdata = rawdata.dropna()
     return split_dataset(rawdata)
 
-def split_dataset(rawdata):
+def split_dataset(rawdata, split_ratio=0.2):
     from sklearn.model_selection import train_test_split
-    train_set, test_val_set = train_test_split(rawdata, test_size=0.2, random_state=42)
-    val_set, test_set = train_test_split(test_val_set, test_size=0.7, random_state=42)
+    train_set, test_val_set = train_test_split(rawdata, test_size=split_ratio, random_state=42)
+    val_set, test_set = train_test_split(test_val_set, test_size=0.5, random_state=42)
     return train_set, val_set, test_set
 
 def plot(training_loss, val_loss, job_id):

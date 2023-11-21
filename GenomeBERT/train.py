@@ -38,13 +38,16 @@ class Dataset(torch.utils.data.Dataset):
         return {key: tensor[i] for key, tensor in self.encodings.items()}
 
 
-def pretrain(model_name, train_data, val_data, job_id):
+def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_token):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     lr = 5.9574e-05
     epochs = 10 #28
     batch_size = 64
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
-    model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
+    if(scratch_model):
+        model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
+    else:
+        model = AutoModel.from_pretrained(f"models/{model_name}", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
     model.to(device)
@@ -108,7 +111,7 @@ def pretrain(model_name, train_data, val_data, job_id):
             else:
                 train_loss.backward()
             util.get_gpu_utilization(logger)
-            logger.info(f'Epoch {epoch},batch {counter} mean Loss : {train_loss.mean().item()}')  
+            # logger.info(f'Epoch {epoch},batch {counter} mean Loss : {train_loss.mean().item()}')  
             mean_train_loss += train_loss.mean().item()
         mean_train_loss = mean_train_loss/counter
         training_losses.append(mean_train_loss)
@@ -148,7 +151,7 @@ def main(model_name, data_dir, logger, job_id):
 
     # Read and load data
     train_data, val_data, test_data = [], [], []
-    file_list = ['Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv'
+    file_list = ['Uniprot_Eukaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
     for file_path in file_list:
         file_path = "{}/{}".format(data_dir, file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
@@ -158,7 +161,7 @@ def main(model_name, data_dir, logger, job_id):
         val_data.extend(val_temp['Sequence'].values.tolist())
         test_data.extend(test_temp['Sequence'].values.tolist())
     
-    pretrain(model_name, train_data, val_data, job_id)
+    pretrain(model_name, train_data, val_data, job_id, scratch_model=False, scratch_token=True)
 
     
 if(__name__) == ('__main__'):
