@@ -162,6 +162,9 @@ def main(model_name, data_dir, logger, job_id):
         train_temp = util.dataload(file)
         file = "{}/{}".format("data/valid", file_path)
         val_temp = util.dataload("data/valid/Uniprot_Eukaryotes.csv")
+        if("Uniprot" in file):
+            train_temp = train_temp.sample(frac=0.3, random_state=42)
+            val_temp = val_temp.sample(frac=0.3, random_state=42)
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
         val_data.extend(val_temp['Sequence'].values.tolist())
