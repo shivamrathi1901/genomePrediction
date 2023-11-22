@@ -62,7 +62,7 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
     optim = torch.optim.AdamW(model.parameters(), lr=lr)
     training_losses = []
     val_losses = []
-    val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True)
+    val_batch = tokenizer(val_data, return_tensors = 'pt', padding=True, truncation=True, max_length = 128)
     val_labels = val_batch['input_ids'].clone().detach()
     val_mask = val_batch['attention_mask'].clone().detach()
     val_input_ids = val_labels.detach().clone()
@@ -79,7 +79,7 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
         mean_train_loss = 0
         mean_val_loss = 0
         logger.info("creating training batch for epoch {}".format(epoch))
-        batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True)
+        batch = tokenizer(train_data, return_tensors = 'pt', padding=True, truncation=True, max_length = 128)
         # logger.info("training batch for epoch {} created \n {}".format(epoch, batch))
         # labels = torch.tensor(batch['input_ids'])
         # mask = torch.tensor(batch['attention_mask'])
@@ -164,8 +164,8 @@ def main(model_name, data_dir, logger, job_id):
         file = "{}/{}".format("data/valid", file_path)
         val_temp = util.dataload("data/valid/Uniprot_Eukaryotes.csv")
         if("Uniprot" in file):
-            train_temp = train_temp.sample(frac=0.3, random_state=42)
-            val_temp = val_temp.sample(frac=0.3, random_state=42)
+            train_temp = train_temp
+            val_temp = val_temp
             logger.info("Len of : {} and {}".format(len(train_temp), len(val_temp)))
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
