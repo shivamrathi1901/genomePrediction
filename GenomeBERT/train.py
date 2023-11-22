@@ -40,6 +40,7 @@ class Dataset(torch.utils.data.Dataset):
 
 def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_token):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
+    logger.info("Starting training...")
     lr = 5.9574e-05
     epochs = 10 #28
     batch_size = 64
@@ -165,6 +166,7 @@ def main(model_name, data_dir, logger, job_id):
         if("Uniprot" in file):
             train_temp = train_temp.sample(frac=0.3, random_state=42)
             val_temp = val_temp.sample(frac=0.3, random_state=42)
+            logger.info("Len of : {} and {}".format(len(train_temp), len(val_temp)))
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
         val_data.extend(val_temp['Sequence'].values.tolist())
