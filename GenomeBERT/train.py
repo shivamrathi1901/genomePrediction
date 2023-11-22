@@ -43,7 +43,10 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
     lr = 5.9574e-05
     epochs = 10 #28
     batch_size = 64
-    tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
+    if(scratch_token):
+        tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}", trust_remote_code=True)
     if(scratch_model):
         model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     else:
@@ -151,20 +154,20 @@ def main(model_name, data_dir, logger, job_id):
 
     # Read and load data
     train_data, val_data, test_data = [], [], []
-    file_list = ['Uniprot_Eukaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
+    file_list = ['Uniprot_Eukaryotes1.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
     for file_path in file_list:
         file = "{}/{}".format("data/train", file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
         logger.info("reading from file {}".format(file))
         train_temp = util.dataload(file)
         file = "{}/{}".format("data/valid", file_path)
-        val_temp = util.dataload(file)
+        val_temp = util.dataload("data/valid/Uniprot_Eukaryotes1.csv")
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
         val_data.extend(val_temp['Sequence'].values.tolist())
         # test_data.extend(test_temp['Sequence'].values.tolist())
     
-    pretrain(model_name, train_data, val_data, job_id, scratch_model=False, scratch_token=True)
+    pretrain(model_name, train_data, val_data, job_id, scratch_model=True, scratch_token=True)
 
     
 if(__name__) == ('__main__'):
