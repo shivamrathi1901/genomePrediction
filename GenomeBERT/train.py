@@ -155,14 +155,14 @@ def main(model_name, data_dir, logger, job_id):
 
     # Read and load data
     train_data, val_data, test_data = [], [], []
-    file_list = ['Swissprot*.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
+    file_list = ['Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
     for file_path in file_list:
         file = "{}/{}".format("data/train", file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
         logger.info("reading from file {}".format(file))
         train_temp = util.dataload(file)
         file = "{}/{}".format("data/valid", file_path)
-        val_temp = util.dataload("data/valid/Uniprot_Eukaryotes.csv")
+        val_temp = util.dataload(file)
         # if("Uniprot" in file):
         #     train_temp = train_temp
         #     val_temp = val_temp
@@ -173,7 +173,7 @@ def main(model_name, data_dir, logger, job_id):
         logger.info("Len of : {} and {}".format(len(train_data), len(val_data)))
         # test_data.extend(test_temp['Sequence'].values.tolist())
     
-    pretrain(model_name, train_data, val_data, job_id, scratch_model=True, scratch_token=True)
+    pretrain(model_name, train_data, val_data, job_id, scratch_model=False, scratch_token=True)
 
     
 if(__name__) == ('__main__'):
