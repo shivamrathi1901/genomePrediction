@@ -21,7 +21,7 @@ def create_test_train_val_file(data_dir):
 
 
 def dataload(file):
-  rawdata = pd.read_csv(file)
+  rawdata = pd.read_csv(file) # chunksize=399150
   rawdata = rawdata[['Sequence', 'OC']]
   rawdata = rawdata.dropna().sample(frac=0.1, random_state=42)
   return rawdata
@@ -32,7 +32,7 @@ def split_dataset(rawdata, split_ratio=0.2):
   val_set, test_set = train_test_split(test_val_set, test_size=0.5, random_state=42)
   return train_set, val_set, test_set
 
-def plot(training_loss, val_loss, job_id):
+def plot(training_losses, val_losses, job_id, epochs):
   import matplotlib.pyplot as plt
   plt.plot(range(1, epochs + 1), training_losses, label='Training Loss')
   plt.plot(range(1, epochs + 1), val_losses, label='Validation Loss')
