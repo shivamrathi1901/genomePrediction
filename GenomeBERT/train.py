@@ -51,6 +51,7 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
     if(scratch_model):
         model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     else:
+        logger.info("Loading a pretrained local model file")
         model = AutoModel.from_pretrained(f"models/{model_name}", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]
