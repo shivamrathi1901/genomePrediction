@@ -163,13 +163,14 @@ def main(model_name, data_dir, logger, job_id):
         train_temp = util.dataload(file)
         file = "{}/{}".format("data/valid", file_path)
         val_temp = util.dataload("data/valid/Uniprot_Eukaryotes.csv")
-        if("Uniprot" in file):
-            train_temp = train_temp
-            val_temp = val_temp
-            logger.info("Len of : {} and {}".format(len(train_temp), len(val_temp)))
+        # if("Uniprot" in file):
+        #     train_temp = train_temp
+        #     val_temp = val_temp
+        
         logger.info("reading from file {}".format(file))
         train_data.extend(train_temp['Sequence'].values.tolist())
         val_data.extend(val_temp['Sequence'].values.tolist())
+        logger.info("Len of : {} and {}".format(len(train_data), len(val_data)))
         # test_data.extend(test_temp['Sequence'].values.tolist())
     
     pretrain(model_name, train_data, val_data, job_id, scratch_model=True, scratch_token=True)

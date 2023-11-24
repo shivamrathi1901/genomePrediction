@@ -23,7 +23,9 @@ def create_test_train_val_file(data_dir):
 def dataload(file):
   rawdata = pd.read_csv(file) # chunksize=399150
   rawdata = rawdata[['Sequence', 'OC']]
-  rawdata = rawdata.dropna().sample(frac=0.1, random_state=42)
+  rawdata = rawdata.dropna()
+  if("Uniprot" in file):
+    rawdata = rawdata.sample(frac=0.1, random_state=42)
   return rawdata
 
 def split_dataset(rawdata, split_ratio=0.2):
