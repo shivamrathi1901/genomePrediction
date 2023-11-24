@@ -42,8 +42,8 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     logger.info("Starting training...")
     lr = 5.9574e-05
-    epochs = 10 #28
-    batch_size = 64
+    epochs = 28
+    batch_size = 512
     if(scratch_token):
         tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
     else:
