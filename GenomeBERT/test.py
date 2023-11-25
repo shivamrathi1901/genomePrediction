@@ -3,7 +3,7 @@ import random, logging, sys, glob
 from sklearn.metrics import classification_report
 import pandas as pd
 
-logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[1], 'test'),
+logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[2], 'test'),
                     format="%(asctime)s [%(levelname)s]: %(message)s",
                     filemode='w')
 logger = logging.getLogger()
@@ -51,7 +51,7 @@ def chunk_sequences(file_path, chunk_size, model, tokenizer):
 
 if __name__ == '__main__':
     csv_file_path = "./test/Swissprot_*.csv"
-    model_name = "GenomeBERT"
+    model_name = sys.argv[1]
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name, trust_remote_code=True)
     chunk_sequences(csv_file_path, chunk_size=2, model=model, tokenizer=tokenizer)
