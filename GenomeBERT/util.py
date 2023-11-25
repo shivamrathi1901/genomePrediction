@@ -36,6 +36,8 @@ def split_dataset(rawdata, split_ratio=0.2):
 
 def plot(training_losses, val_losses, job_id, epochs):
   import matplotlib.pyplot as plt
+  training_losses = convert_float_to_scientific(training_losses)
+  val_losses = convert_float_to_scientific(val_losses)
   plt.plot(range(1, epochs + 1), training_losses, label='Training Loss')
   plt.plot(range(1, epochs + 1), val_losses, label='Validation Loss')
   plt.xlabel('Epoch')
@@ -43,6 +45,13 @@ def plot(training_losses, val_losses, job_id, epochs):
   plt.title('Training vs Validation Loss')
   plt.legend()
   plt.savefig(f"{job_id}_plot.png")
+
+def convert_float_to_scientific(losses):
+  for i in range(len(losses)):
+    a = '%E' % losses[i]
+    losses[i] = a.split('E')[0].rstrip('0').rstrip('.') + 'E' + a.split('E')[1]
+  return losses
+
 
 def count_nucleotides(sequence,nucleotides_count):
   for nucleotide in sequence:
