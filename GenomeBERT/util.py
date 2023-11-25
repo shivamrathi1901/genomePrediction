@@ -54,8 +54,16 @@ def convert_float_to_scientific(losses):
 
 
 def copy_static_files(model_path):
-  import glob, shutil
+  import glob, shutil, json
   for files in glob.glob("static_model_config/*"):
+    if "config.json" in files:
+      with open(files, 'r+') as f:
+        d = json.load(f)
+        d["_name_or_path"] = model_path
+        f.seek(0)
+        json.dump(d, f, indent = 4)
+        f.truncate()
+
     if ".bin" not in files:
       shutil.copy2(files, model_path)
 
