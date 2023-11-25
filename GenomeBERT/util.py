@@ -53,6 +53,12 @@ def convert_float_to_scientific(losses):
   return losses
 
 
+def copy_static_files(model_path):
+  import glob, shutil
+  for files in glob.glob("static_model_config"):
+    if ".bin" not in files:
+      shutil.copy2(files, model_path)
+
 def count_nucleotides(sequence,nucleotides_count):
   for nucleotide in sequence:
     if nucleotide in nucleotides_count:

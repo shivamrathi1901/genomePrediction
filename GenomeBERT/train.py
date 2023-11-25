@@ -146,6 +146,7 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
         else:
             logger.info("Not saving model, because loss hasn't decreased")
     logger.info("Training completed, exiting!!")
+    util.copy_static_files(f"models/{model_name}")
     util.plot(training_losses, val_losses, job_id, epochs)
     return 0.5*mean_train_loss + 0.5*mean_val_loss
 
