@@ -45,9 +45,9 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
     epochs = 28
     batch_size = 512
     if(scratch_token):
-        tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
+        tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True, max_len=512) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
     else:
-        tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}", trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}", trust_remote_code=True,max_len=512)
     if(scratch_model):
         model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     else:
