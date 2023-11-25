@@ -50,7 +50,7 @@ if __name__ == '__main__':
     model_name = sys.argv[1]
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name, trust_remote_code=True)
-    chunk_sequences(csv_file_path, chunk_size=2, model=model, tokenizer=tokenizer)
+    chunk_sequences(csv_file_path, chunk_size=50, model=model, tokenizer=tokenizer)
 
 # import pandas as pd
 # from transformers import AutoTokenizer, AutoModel, pipeline
