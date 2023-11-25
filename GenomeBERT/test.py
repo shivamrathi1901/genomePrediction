@@ -12,23 +12,19 @@ logger.setLevel(logging.DEBUG)
 
 def run_test(sequences, model, tokenizer):
     fill = pipeline('fill-mask', model=model, tokenizer=tokenizer)
-
     result = []
     expected = []
-
     for i in range(len(sequences)):
         idx = random.randint(0, len(sequences[i]) - 1)
         test_seq = sequences[i][:idx] + fill.tokenizer.mask_token + sequences[i][idx + 4:]
         expected.append(sequences[i][idx: idx + 4])
-        sequences[i] = test_seq
-
+        # sequences[i] = test_seq
     # Directly access the model outputs without modifying the tuple
         fill_output = fill(test_seq)
-        logger.info(fill_output[0]['token_str'])
+        # logger.info(fill_output[0]['token_str'])
         resp = fill_output[0]['token_str']
-
         result.append(fill_output[0]['token_str'])
-
+    logger.info(f"result len : {len(result)}  expected len : {len(expected)}")
     return result, expected
 
 def chunk_sequences(file_path, chunk_size, model, tokenizer):
@@ -39,7 +35,7 @@ def chunk_sequences(file_path, chunk_size, model, tokenizer):
             sequences = chunk['Sequence'].tolist()
             results, expected = run_test(sequences, model, tokenizer)
             result.extend(results)
-            expect.append(expected)
+            expect.extend(expected)
 
         # Process the results and expected values as needed
         #for res, exp in zip(results, expected):
