@@ -157,7 +157,7 @@ def main(model_name, data_dir, logger, job_id):
 
     # Read and load data
     train_data, val_data, test_data = [], [], []
-    file_list = ['Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
+    file_list = ['Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Uniprot_Eukaryotes.csv', 'Uniprot_Prokaryotes.csv'] #, 'Uniprot_Eukaryotes.csv', 'Swissprot_Eukaryotes.csv', 'Swissprot_Prokaryotes.csv', 'Swissprot_Prokaryotes.csv'
     for file_path in file_list:
         file = "{}/{}".format("data/train", file_path)
         # Here we need to read Uniprot data first and then swiss prot, so model learn correct info in the latter stages of learning
