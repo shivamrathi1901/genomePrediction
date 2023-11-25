@@ -22,5 +22,5 @@ export TOKENIZERS_PARALLELISM=false
 # pip install scikit-learn scipy matplotlib pycuda lietorch
 pip uninstall triton -y
 date
-python train.py -m GenomeBERT -d /work/ah2lab/aisdata/ -id $SLURM_JOB_ID
+python train.py -m models/GenomeBERT -d /work/ah2lab/aisdata/ -id $SLURM_JOB_ID
 date
