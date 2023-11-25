@@ -55,7 +55,7 @@ def convert_float_to_scientific(losses):
 
 def copy_static_files(model_path):
   import glob, shutil
-  for files in glob.glob("static_model_config"):
+  for files in glob.glob("static_model_config/*"):
     if ".bin" not in files:
       shutil.copy2(files, model_path)
 
