@@ -21,4 +21,4 @@ ml Python/3.8.6-GCCcore-10.2.0
 
 # pip install transformers==4.30.2
 
-python train_tokenizer.py -m GenomeBERT -d /scratch/sb66469/ProjectAIS/FinalData -id $SLURM_JOB_ID 
+python train_tokenizer.py -m GenomeBERT -d data/train/ -id $SLURM_JOB_ID 

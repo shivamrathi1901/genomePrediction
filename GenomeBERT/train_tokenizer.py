@@ -35,13 +35,13 @@ def tokenize(sequences, model_name, logger):
 
 def read_all_sequences(data_dir):
     rawdata = pd.DataFrame(columns=[['Sequence']])
-    for file in glob.glob("{}/Uniprot_Eukaryotes.csv".format(data_dir)):
+    for file in glob.glob("{}/Swissprot_*.csv".format(data_dir)):
         logger.info("reading file : {}".format(file))
         temp = pd.read_csv(file)
         temp = temp[['Sequence']]
         frames = [rawdata, temp]
         rawdata = pd.concat(frames)
-        rawdata = rawdata.sample(frac=0.5, random_state=42)
+        # rawdata = rawdata.sample(frac=0.5, random_state=42)
     del frames
     gc.collect()
     rawdata = rawdata[['Sequence']]
