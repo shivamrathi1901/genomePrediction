@@ -86,7 +86,7 @@ def get_gpu_utilization(logger):
       return None
     
 def break_uniprot():
-  lst = ['train'] #, 'test', 'valid'
+  lst = ['valid'] #, 'test', 'valid'
   for item in lst:
     for file in glob.glob(f"data/{item}/Uniprot_*.csv"):
       rawdata = pd.read_csv(file)
