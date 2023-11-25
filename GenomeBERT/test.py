@@ -2,6 +2,7 @@ from transformers import AutoTokenizer, AutoModel, pipeline, AutoModelForMaskedL
 import random, logging, sys, glob
 from sklearn.metrics import classification_report
 import pandas as pd
+import util
 
 logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[2], 'test'),
                     format="%(asctime)s [%(levelname)s]: %(message)s",
