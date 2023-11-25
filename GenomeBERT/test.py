@@ -1,6 +1,5 @@
-
 from transformers import AutoTokenizer, AutoModel, pipeline, AutoModelForMaskedLM
-import random, logging, sys
+import random, logging, sys, glob
 from sklearn.metrics import classification_report
 import pandas as pd
 
@@ -27,26 +26,31 @@ def run_test(sequences, model, tokenizer):
         fill_output = fill(test_seq)
         logger.info(fill_output[0]['token_str'])
         resp = fill_output[0]['token_str']
-    
+
         result.append(fill_output[0]['token_str'])
 
     return result, expected
 
 def chunk_sequences(file_path, chunk_size, model, tokenizer):
-    reader = pd.read_csv(file_path, chunksize=chunk_size)
+    result, expect = [], []
+    for file in glob.glob(file_path):
+        reader = pd.read_csv(file, chunksize=chunk_size)
+        for chunk in reader:
+            sequences = chunk['Sequence'].tolist()
+            results, expected = run_test(sequences, model, tokenizer)
+            result.extend(results)
+            expect.append(expected)
 
-    for chunk in reader:
-        sequences = chunk['Sequence'].tolist()
-        results, expected = run_test(sequences, model, tokenizer)
         # Process the results and expected values as needed
-        for res, exp in zip(results, expected):
-            print(f"Expected: {exp}  Response: {res}")
-            if(len(expected)%100==0):
-                logger.info("processing {}".format(len(expected)))
-            print(classification_report(results,expected))
+        #for res, exp in zip(results, expected):
+        #    print(f"Expected: {exp}  Response: {res}")
+        #    if(len(expected)%100==0):
+        #        logger.info("processing {}".format(len(expected)))
+        #    print(classification_report(results,expected))
+    print(classification_report(result,expect))
 
 if __name__ == '__main__':
-    csv_file_path = "./test/Swissprot_Eukaryotes.csv"
+    csv_file_path = "./test/Swissprot_*.csv"
     model_name = "GenomeBERT"
     tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name, trust_remote_code=True)
