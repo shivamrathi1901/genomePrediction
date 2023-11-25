@@ -96,3 +96,30 @@ def break_uniprot():
       df2.to_csv(f"data/{item}/{file.split('/')[-1].split('.')[0]}2.csv")
 
 
+def find_overlapping_substrings(str1, str2):
+    # Initialize a list to store overlapping substrings
+    overlapping_substrings = []
+    # Iterate through the length of the shorter string
+    min_length = min(len(str1), len(str2))
+    for length in range(1, min_length + 1):
+        # Check for overlapping substrings of the current length
+        for i in range(len(str1) - length + 1):
+            substring = str1[i:i + length]
+            if substring in str2:
+                overlapping_substrings.append(substring)
+    return overlapping_substrings
+	
+def find_largest_overlapping_substring(str1, str2):
+    # Initialize variables to store the longest overlapping substring
+    max_length = 0
+    max_substring = ""
+    # Iterate through the length of the shorter string
+    min_length = min(len(str1), len(str2))
+    for length in range(1, min_length + 1):
+        # Check for overlapping substrings of the current length
+        for i in range(len(str1) - length + 1):
+            substring = str1[i:i + length]
+            if substring in str2 and len(substring) > max_length:
+                max_length = len(substring)
+                max_substring = substring
+    return max_substring
