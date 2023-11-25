@@ -7,7 +7,7 @@
 #SBATCH --nodes=1                       # Number of nodes you require
 #SBATCH --ntasks=1                      # total number of tasks across all nodes
 #SBATCH --cpus-per-task=16              # Cores per task (>1 if multithread tasks)
-#SBATCH --mem=80G                      # Real memory (RAM) required (MB)
+#SBATCH --mem=256G                      # Real memory (RAM) required (MB)
 #SBATCH --time=7:00:00               # Total run time limit (HH:MM:SS)
 #SBATCH --export=ALL                    # Export you current env to the job env
 #SBATCH --mail-user=soumya.bharadwaj@uga.edu  # email of the user
@@ -21,7 +21,7 @@ ml Python/3.8.6-GCCcore-10.2.0
 export TOKENIZERS_PARALLELISM=false
 # pip install pycuda 
 # pip install scikit-learn scipy matplotlib pycuda lietorch
-pip uninstall triton -y
+# pip uninstall triton -y
 date
 python test.py models/GenomeBERT $SLURM_JOB_ID 
 date
