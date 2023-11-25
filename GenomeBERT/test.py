@@ -43,6 +43,13 @@ def chunk_sequences(file_path, chunk_size, model, tokenizer):
         #    if(len(expected)%100==0):
         #        logger.info("processing {}".format(len(expected)))
         #    print(classification_report(results,expected))
+    overlap_acc = 0
+    for str1, str2 in zip(result, expect):
+        overlap_string = util.find_largest_overlapping_substring(str1, str2)
+        overlap_acc += len(overlap_string)/len(str2)
+
+    print(f"Avg overlap accuraccy : {overlap_acc/len(expect) *100}%")
+
     print(classification_report(result,expect))
 
 if __name__ == '__main__':
