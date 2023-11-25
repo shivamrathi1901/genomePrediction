@@ -23,6 +23,6 @@ export TOKENIZERS_PARALLELISM=false
 # pip install scikit-learn scipy matplotlib pycuda lietorch
 pip uninstall triton -y
 date
-python test.py $SLURM_JOB_ID 
+python test.py models/GenomeBERT $SLURM_JOB_ID 
 date
 

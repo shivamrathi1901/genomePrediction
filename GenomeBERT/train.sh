@@ -17,10 +17,10 @@
 
 ##Install of softwares and load before running models:
 ml Python/3.8.6-GCCcore-10.2.0
-export TOKENIZERS_PARALLELISM=false
+export TOKENIZERS_PARALLELISM=true
 # pip install pycuda 
 # pip install scikit-learn scipy matplotlib pycuda lietorch
 pip uninstall triton -y
 date
-python train.py -m models/GenomeBERT -d /work/ah2lab/aisdata/ -id $SLURM_JOB_ID
+python train.py -m GenomeBERT -d /work/ah2lab/aisdata/ -id $SLURM_JOB_ID
 date
