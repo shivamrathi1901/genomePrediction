@@ -1,0 +1,13 @@
+Currently running training on a model that is trained on 5% of Uniprot data but using default tokenizer 
+
+We have a trained tokenizer which was trained on 100% Swissprot (trainset).
+
+We ran a test run which used a default tokenizer and 5% Uniprot trained model  which yielded Avg overlap accuraccy : 43.36352763070952%
+
+Now we have to evaluate the above 5% Uniprot trained model trained model with a Swissprot trained tokenizer 
+
+There is one model being trained on all diff 4 data files (Uniprot 5%s)  with a default tokenizer.
+
+Next we will train on Swissprot alone with Swissprot trained tokenizer.
+
+We have another 50% Uniprot Tokenizer being trained which we will train on Swissprot and that will be our ultimate tokenizer(If it finishes on time)
