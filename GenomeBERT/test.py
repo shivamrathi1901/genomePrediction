@@ -30,7 +30,7 @@ def run_test(sequences, model, tokenizer):
         # logger.info(fill_output[0]['token_str'])
         resp = fill_output[0]['token_str']
         result.append(fill_output[0]['token_str'])
-    logger.info(f"result len : {len(result)}  expected len : {len(expected)}")
+    # logger.info(f"result len : {len(result)}  expected len : {len(expected)}")
     return result, expected
 
 def chunk_sequences(file_path, chunk_size, model, tokenizer):
@@ -54,7 +54,7 @@ def chunk_sequences(file_path, chunk_size, model, tokenizer):
         overlap_string = util.find_largest_overlapping_substring(str1, str2)
         overlap_acc += len(overlap_string)/len(str2)
 
-    print(f"Avg overlap accuraccy : {overlap_acc/len(expect) *100}%")
+    logger.info(f"Avg overlap accuraccy : {overlap_acc/len(expect) *100}%")
 
     print(classification_report(result,expect))
 
