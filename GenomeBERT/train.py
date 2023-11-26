@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModel
 import util
 import numpy as np
 import torch.nn as nn
-
+meta = ""
 
 # from huggingface_hub import login
 # login("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")
@@ -41,17 +41,21 @@ class Dataset(torch.utils.data.Dataset):
 def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_token):
     # logger.info("{} and {}".format(type(val_data), len(val_data)))
     logger.info("Starting training...")
+
     lr = 5.9574e-05
     epochs = 28
     batch_size = 512
     if(scratch_token):
+        logger.info(f"Loading default tokenizer from Huggingface")
         tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True, max_len=512) #using DNABERT-2 since DNABERT-6's tokenizer is not very explainable
     else:
+        logger.info(f"Loading pretrained tokenizer from {model_name}")
         tokenizer = AutoTokenizer.from_pretrained(f"models/{model_name}", trust_remote_code=True,max_len=512)
     if(scratch_model):
+        logger.info(f"Loading default model")
         model = AutoModel.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
     else:
-        logger.info("Loading a pretrained local model file")
+        logger.info(f"Loading a pretrained local model from {model_name}")
         model = AutoModel.from_pretrained(f"models/{model_name}", trust_remote_code=True)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     device_ids = [0, 1, 2, 3]

@@ -3,14 +3,19 @@ import random, logging, sys, glob
 from sklearn.metrics import classification_report
 import pandas as pd
 import util
-
-logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[2], 'test'),
+tokenizer_dir = "zhihan1996/DNABERT-2-117M" #default tokenizer
+model_name = sys.argv[1]
+tokenizer_dir = sys.argv[2]
+meta = "Now loading the model which in training and at epoch 8th, saved at epoch 6th. Loading tokenizer which is training on all Swissprot train set"
+# with open(f"{model_name}/meta.txt", 'w') as file:
+#     file.write(meta)
+logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[3], 'test'),
                     format="%(asctime)s [%(levelname)s]: %(message)s",
                     filemode='w')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-
+logger.info(meta)
 def run_test(sequences, model, tokenizer):
     fill = pipeline('fill-mask', model=model, tokenizer=tokenizer)
     result = []
@@ -55,9 +60,10 @@ def chunk_sequences(file_path, chunk_size, model, tokenizer):
 
 if __name__ == '__main__':
     csv_file_path = "./data/test/Swissprot_*.csv"
-    model_name = sys.argv[1]
-    tokenizer = AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M", trust_remote_code=True)
+    
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, trust_remote_code=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name, trust_remote_code=True)
+    logger.info(f"Loading Tokenizer from {tokenizer_dir} and loading model from {model_name}")
     chunk_sequences(csv_file_path, chunk_size=50, model=model, tokenizer=tokenizer)
 
 # import pandas as pd

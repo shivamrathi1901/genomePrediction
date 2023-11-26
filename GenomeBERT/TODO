@@ -1,7 +1,7 @@
 @ratish11 & @Soumya130498
 Models: 
 
-Currently running training on a model that is trained on 5% of Uniprot data but using default tokenizer 
+Currently running training on a model that is checkpointed on 5% of Uniprot data but using default tokenizer 
 
 We have a trained tokenizer which was trained on 100% Swissprot (trainset).
 
