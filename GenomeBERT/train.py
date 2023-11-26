@@ -148,7 +148,7 @@ def pretrain(model_name, train_data, val_data, job_id, scratch_model, scratch_to
             else:
                 model.save_pretrained("models/{}".format(model_name))
         else:
-            logger.info("Not saving model, because loss hasn't decreased")
+            logger.info(f"Not saving model, because loss hasn't decreased, last avg accuraccy {min_avg_loss}")
     logger.info("Training completed, exiting!!")
     util.copy_static_files(f"models/{model_name}")
     util.plot(training_losses, val_losses, job_id, epochs)
