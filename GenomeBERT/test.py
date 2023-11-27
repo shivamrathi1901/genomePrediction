@@ -4,7 +4,8 @@ from sklearn.metrics import classification_report
 import pandas as pd
 import util
 tokenizer_dir = "zhihan1996/DNABERT-2-117M" #default tokenizer
-model_name = sys.argv[1]
+model_name = "zhihan1996/DNABERT-2-117M"
+# model_name = sys.argv[1]
 # tokenizer_dir = sys.argv[2]
 meta = "Testing on a default model and tokenizer for the base case comparison"
 # with open(f"{model_name}/meta.txt", 'w') as file:
