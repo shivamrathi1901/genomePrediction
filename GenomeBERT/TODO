@@ -5,7 +5,11 @@ Currently running training on a model that is checkpointed on 5% of Uniprot data
 
 We have a trained tokenizer which was trained on 100% Swissprot (trainset).
 
-We ran a test run which used a default tokenizer and 5% Uniprot trained model  which yielded Avg overlap accuraccy : 43.36352763070952%
+```We ran a test run which used a default tokenizer and 5% Uniprot trained model  which yielded Avg overlap accuraccy : 43.36352763070952%```
+
+```Now loading the model which in training and at epoch 8th, saved at epoch 6th. Loading tokenizer which is training on all Swissprot train set 
+Loading Tokenizer from models/GenomeBERTv1 and loading model from models/GenomeBERT 
+Avg overlap accuraccy : 37.73116202042507%```
 
 Now we have to evaluate the above 5% Uniprot trained model trained model with a Swissprot trained tokenizer 
 
@@ -14,6 +18,9 @@ There is one model being trained on all diff 4 data files (Uniprot 5%s)  with a 
 Next we will train on Swissprot alone with Swissprot trained tokenizer.
 
 We have another 50% Uniprot Tokenizer being trained which we will train on Swissprot and that will be our ultimate tokenizer(If it finishes on time)
+
+
+
 
 
 ----------------------------------------------------------------------------------------------------------------------------------
