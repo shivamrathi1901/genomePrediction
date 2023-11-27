@@ -6,7 +6,7 @@ import util
 tokenizer_dir = "zhihan1996/DNABERT-2-117M" #default tokenizer
 model_name = sys.argv[1]
 # tokenizer_dir = sys.argv[2]
-meta = "Now loading the model which in training and at epoch 8th, saved at epoch 6th. Loading default tokenizer"
+meta = "Testing on a default model and tokenizer for the base case comparison"
 # with open(f"{model_name}/meta.txt", 'w') as file:
 #     file.write(meta)
 logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[3], 'test'),
