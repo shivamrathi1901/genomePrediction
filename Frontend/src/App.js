@@ -5,15 +5,27 @@ import React, { useState } from 'react';
 function App() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState([]);
+  const [inputArray, setInputArray] = useState([]);
+  const [finalOutputText, setFinalOutputText] = useState([]);
 
   const handleChange = (event) => {
     setInputText(event.target.value);
   };
 
+  const handleFinalOuput = () => {
+    let finalOutput = [];
+    for(let i=0;i<=inputArray.length-1;i++){
+      let tempString = inputArray[i].replace(/\[MASK\]/g, "\n[" + outputText[i] + "]\n");
+      finalOutput[i]=tempString;
+    }
+    setFinalOutputText(finalOutput);
+  }
+
   const handleSubmit = async () => {
     let trimmedString = inputText.trim();
     let valuesArray = trimmedString.split(',');
     let trimmedValuesArray = valuesArray.map((value) => value.trim());
+    setInputArray(trimmedValuesArray);
     for (let i = 0; i <= trimmedValuesArray.length - 1; i++) {
       try {
         const response = await fetch('http://127.0.0.1:5000/api', {
@@ -26,6 +38,7 @@ function App() {
 
         const data = await response.json();
         setOutputText((prevOutputText) => [...prevOutputText, data]);
+        handleFinalOuput();
       } catch (error) {
         console.error('Error calling Flask API:', error);
       }
@@ -47,8 +60,8 @@ function App() {
       <br />
       <div>
         <h2>OUTPUT:</h2>
-        {outputText.length > 0 ? (
-          outputText.map((output, index) => (
+        {finalOutputText.length > 0 ? (
+          finalOutputText.map((output, index) => (
             <textarea
               key={index}
               rows="4"
