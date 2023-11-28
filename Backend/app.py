@@ -1,5 +1,6 @@
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 # from sklearn.metrics import accuracy_score, f1_score, classification_report
 import  sys
 # from transformers import AutoTokenizer, pipeline, AutoModelForMaskedLM
@@ -14,7 +15,7 @@ model_name = "models/GenomeBERT"
 # fill = pipeline('fill-mask', model=model, tokenizer=tokenizer)
 
 app = Flask(__name__)# Load the model
-
+CORS(app)
 # fill = pipeline('fill-mask', model=model_name, tokenizer=tokenizer)
 
 @app.route('/api',methods=['POST'])
