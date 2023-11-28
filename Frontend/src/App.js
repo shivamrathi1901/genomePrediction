@@ -10,16 +10,16 @@ function App() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api', {
+      const response = await fetch('http://127.0.0.1:5000/api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ input: inputText }),
+        body: JSON.stringify({ sequence: inputText }),
       });
 
       const data = await response.json();
-      setOutputText(data.output);
+      setOutputText(data);
     } catch (error) {
       console.error('Error calling Flask API:', error);
     }
@@ -27,20 +27,27 @@ function App() {
 
   return (
     <div className="App">
-      <h1>React Flask App</h1>
+      <h1>GENOME SEQUENCE PREDICTION</h1>
       <textarea
         rows="4"
         cols="50"
         value={inputText}
         onChange={handleChange}
-        placeholder="Enter 128 characters"
+        placeholder="Enter Masked Sequence"
       />
       <br />
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleSubmit}>SUBMIT</button>
       <br />
       <div>
-        <h2>Output:</h2>
-        <p>{outputText}</p>
+        <h2>OUTPUT:</h2>
+        <textarea
+          rows="4"
+          cols="50"
+          readOnly
+          value={outputText}
+          placeholder="Output will be displayed here"
+        />
+        {/* <p>{outputText}</p> */}
       </div>
 
     </div>
