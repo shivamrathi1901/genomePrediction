@@ -7,8 +7,8 @@ import  sys
 tokenizer_name = "zhihan1996/DNABERT-2-117M"
 model_name = "models/GenomeBERT"
 
-tokenizer_name = sys.argv[1]
-model_name = sys.argv[2]
+# tokenizer_name = sys.argv[1]
+# model_name = sys.argv[2]
 # tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, trust_remote_code=True)
 # model = AutoModelForMaskedLM.from_pretrained(model_name, trust_remote_code=True)
 # fill = pipeline('fill-mask', model=model, tokenizer=tokenizer)
@@ -26,7 +26,7 @@ def predict():
     
     # prediction = model.predict([[np.array(data['exp'])]])    # Take the first value of prediction
     # resp = fill(data)[0]['token_str'] 
-    return jsonify(resp)
+    return jsonify("CATT")
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
