@@ -7,7 +7,7 @@ tokenizer_dir = "zhihan1996/DNABERT-2-117M" #default tokenizer
 model_name = "zhihan1996/DNABERT-2-117M"
 model_name = sys.argv[1]
 # tokenizer_dir = sys.argv[2]
-meta = "Test: Swiss trained tokenizer with Model trained till 15th epoch"
+meta = "Test: default tokenizer with Model trained till 15th epoch"
 # with open(f"{model_name}/meta.txt", 'w') as file:
 #     file.write(meta)
 logging.basicConfig(filename="log/{}_{}.log".format(sys.argv[3], 'test'),
