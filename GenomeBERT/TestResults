@@ -8,3 +8,4 @@ Loading Tokenizer from models/GenomeBERTv1 and loading model from models/GenomeB
 ```Testing on a default model and tokenizer for the base case comparison => Avg overlap accuraccy : 39.04013917814636%```
 
 ```Testing on a default model and tokenizer for the base case comparison, but now on GPU => Avg overlap accuraccy : 39.08237773818785%```
+
