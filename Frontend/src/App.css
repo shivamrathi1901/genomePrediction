@@ -4,7 +4,6 @@ body {
   background: url('background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  /* background-color: lightskyblue; */
   font-family: 'Arial', sans-serif;
   color: #fff;
 }
@@ -12,12 +11,20 @@ body {
 .App {
   text-align: center;
   margin: 50px;
+  margin-top: -10px;
 }
 
 h1 {
   color: white;
-  background-color: red;
+  background-color: rgb(40, 91, 82);
   padding: 10px;
+}
+
+h2 {
+  color: white;
+  background-color: rgb(40, 91, 82);
+  padding: 10px;
+  text-align: left;
 }
 
 textarea {
@@ -25,15 +32,21 @@ textarea {
   padding: 10px;
   margin: 10px 0;
   box-sizing: border-box;
+  border: 1px solid #ddd; /* Add a border */
+  border-radius: 5px; /* Add rounded corners */
+  resize: vertical; /* Allow vertical resizing */
+  background-color: lightgrey;
+  color: black;
 }
 
 button {
-  background-color: red;
+  background-color: rgb(40, 91, 82);
   color: white;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
   border: none;
+  font-weight: 500;
 }
 
 button:hover {
@@ -44,9 +57,6 @@ div {
   margin-top: 20px;
 }
 
-h2 {
-  color: #00bcd4;
-}
 
 ul {
   list-style-type: none;
