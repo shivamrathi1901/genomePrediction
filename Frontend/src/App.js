@@ -25,6 +25,7 @@ function App() {
     for (let i = 0; i <= inputArray.length - 1; i++) {
       let tempString = inputArray[i].replace(/\[MASK\]/g, "\n[" + outputText[i] + "]\n");
       finalOutput[i] = tempString;
+      console.log(outputText[i])
     }
     setFinalOutputText(finalOutput);
   }
@@ -34,7 +35,7 @@ function App() {
     let valuesArray = trimmedString.split(',');
     let trimmedValuesArray = valuesArray.map((value) => value.trim());
     setInputArray(trimmedValuesArray);
-    for (let i = 0; i <= trimmedValuesArray.length - 1; i++) {
+    for (let i = 0; i < trimmedValuesArray.length; i++) {
       try {
         const response = await fetch('http://127.0.0.1:5000/api', {
           method: 'POST',
@@ -166,7 +167,7 @@ function App() {
               backStyle={{ ...styles.card,...styles.centeredContent}}
               frontComponent={<div><strong>Tokenizer Checkpoint:</strong> Default(zhihan1996/DNABERT-2-117M) <br/>
               <strong>Model Checkpoint:</strong> Fully trained on combination of Swissprot and Uniprot Data</div>}
-              backComponent={<div><strong>Avg Overlap Accuraccy:</strong> </div>}
+              backComponent={<div><strong>Avg Overlap Accuraccy:</strong> 35.9609%</div>}
               containerStyle={{width: "100%", height: "100%"}}
             />
           </div>
@@ -176,7 +177,7 @@ function App() {
               backStyle={{ ...styles.card,...styles.centeredContent}}
               frontComponent={<div><strong>Tokenizer Checkpoint:</strong> Trained on SwissProt Trainset <br/>
                 <strong>Model Checkpoint:</strong> Fully trained on combination of Swissprot and Uniprot Data</div>}
-              backComponent={<div><strong>Avg Overlap Accuraccy:</strong> </div>}
+              backComponent={<div><strong>Avg Overlap Accuraccy:</strong> 38.9761%</div>}
               containerStyle={{width: "100%", height: "100%"}}
             />
           </div>
